@@ -6,6 +6,8 @@ jobs:
     first_job:
         runs-on: ubuntu-latest
         steps:
+            - uses: actions/checkout@v4.1.7
+
             - name: welcome message
               run: echo " This is just a CI practice"
 
@@ -13,6 +15,6 @@ jobs:
               run: ls -l
 
             - name: Read file
-              run: cat ../README.md  
+              run: cat README.md  
 
  
