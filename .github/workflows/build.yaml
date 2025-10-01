@@ -10,12 +10,11 @@ jobs:
               uses: actions/checkout@v5
 
             - name: welcome message
-              run: echo " This is just a CI practice"
+              run: |
+                echo " This is just a CI practice"
+                ls -ltra
+                cat README.md 
 
-            - name: list files and permissions
-              run: ls -l
-
-            - name: Read file
-              run: cat README.md  
+            
 
  
