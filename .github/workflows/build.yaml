@@ -14,6 +14,8 @@ jobs:
                 echo " This is just a CI practice"
                 ls -ltra
                 cat README.md 
+            - name: Generate ASCII Artwork
+              run: cowsay -f dragon "RAWR LIIKE A DRAGON!" >> dragon.txt    
 
             
 
