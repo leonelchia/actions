@@ -6,7 +6,8 @@ jobs:
     first_job:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v5
+            - name: checkout
+              uses: actions/checkout@v5
 
             - name: welcome message
               run: echo " This is just a CI practice"
