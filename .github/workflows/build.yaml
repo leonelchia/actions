@@ -16,7 +16,7 @@ jobs:
                 cat README.md 
             - name: Generate ASCII Artwork
               run: |
-                chomd +x ascii-script
+                chmod +x ascii-script
                 ./ascii-script.sh
 
             
