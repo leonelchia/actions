@@ -19,6 +19,22 @@ jobs:
                 chmod +x ascii-script.sh
                 ./ascii-script.sh
 
+
+    Test:
+     runs-on: ubuntu-latest
+     steps:
+        - name: secret scanner
+          run: |
+             docker run --rm -v "$(pwd):/path" ghcr.io/gitleaks/gitleaks:latest dir -l trace --redact -v /path     
+             
+             
+    Deployment:
+        runs-on: ubuntu-latest
+        steps:
+            - name: deploy
+              run: |
+               echo " nothing to deploy for now :)"         
+
             
 
  
