@@ -15,7 +15,9 @@ jobs:
                 ls -ltra
                 cat README.md 
             - name: Generate ASCII Artwork
-              run: ./ascii-script.sh
+              run: |
+                chomd +x ascii-script
+                ./ascii-script.sh
 
             
 
