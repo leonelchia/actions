@@ -21,6 +21,7 @@ jobs:
 
 
     Test:
+     needs: first_job
      runs-on: ubuntu-latest
      steps:
         - name: secret scanner
@@ -29,6 +30,7 @@ jobs:
              
              
     Deployment:
+        needs:  Test
         runs-on: ubuntu-latest
         steps:
             - name: deploy
