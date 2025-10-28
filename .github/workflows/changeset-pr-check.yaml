@@ -1,0 +1,66 @@
+name: Changesets
+
+on:
+  pull_request:
+    types:
+      - edited
+      - opened
+      - synchronize
+      - reopened
+    branches: [develop]
+
+env:
+  NPM_TOKEN: ${{ secrets.NPM_TOKEN_READ_ONLY }}
+
+jobs:
+  require-changeset:
+    name: Require changeset
+    runs-on: ubuntu-latest
+
+    if: ${{ !contains(github.head_ref, 'changeset-release') }}
+
+    steps:
+      - name: Check if changeset should be required
+        id: ignore-changeset
+        uses: actions/github-script@v7.0.1
+        with:
+          script: |
+            const skip = context.payload.pull_request.body?.includes('/ignore-missing-changeset') || false;
+            console.log('PR body contains "/ignore-missing-changeset":', skip);
+            return skip;
+
+      - uses: actions/checkout@v4.1.7
+        if: steps.ignore-changeset.outputs.result != 'true'
+        with:
+          fetch-depth: 0
+
+      - name: Cache pnpm modules
+        if: steps.ignore-changeset.outputs.result != 'true'
+        uses: actions/cache@v4.2.0
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-
+
+      - name: Install pnpm
+        if: steps.ignore-changeset.outputs.result != 'true'
+        uses: pnpm/action-setup@v4.0.0
+
+      - uses: actions/setup-node@v4.0.3
+        if: steps.ignore-changeset.outputs.result != 'true'
+        with:
+          node-version-file: '.nvmrc'
+          cache: pnpm
+
+      - name: Install dependencies
+        if: steps.ignore-changeset.outputs.result != 'true'
+        run: pnpm install
+
+      - name: Require changeset
+        if: steps.ignore-changeset.outputs.result != 'true'
+        run: |
+          # Checkout PR head commit instead of merge commit
+          # See: https://github.com/atlassian/changesets/issues/517
+          git checkout ${{ github.event.pull_request.head.sha }}
+          pnpm changeset status --since=origin/develop

@@ -1,0 +1,59 @@
+name: Changesets
+
+env:
+  NPM_TOKEN: ${{ secrets.NPM_TOKEN_READ_ONLY }}
+
+on:
+  workflow_run:
+    workflows: ['Build & Deploy']
+    branches: [develop]
+    types:
+      - requested
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  publish-version:
+    name: Publish version
+    runs-on: ubuntu-latest
+
+    if: github.ref == 'refs/heads/develop'
+
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4.1.7
+
+      - name: Cache pnpm modules
+        uses: actions/cache@v4.2.0
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4.0.0
+
+      - uses: actions/setup-node@v4.0.3
+        with:
+          node-version-file: '.nvmrc'
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Create Release Pull Request or Publish to npm
+        id: changesets
+        uses: changesets/action@v1.4.8
+        with:
+          title: 'chore(release): version packages 🦋'
+          publish: pnpm release
+          commit: 'chore(release): version packages 🦋'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HUSKY: 0

@@ -1,0 +1,29 @@
+name: upgradable packages
+
+on:
+  pull_request:
+    branches:
+      - develop
+
+env:
+  NPM_TOKEN: ${{ secrets.NPM_TOKEN_READ_ONLY }}      
+
+jobs:
+  check-upgradable-packages:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.7  
+
+      - uses: pnpm/action-setup@v4.0.0  
+
+      - uses: actions/setup-node@v4.0.3
+        with:
+          cache: pnpm  
+          node-version-file: ".nvmrc"  
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile  
+
+      - name: Check for upgradable packages
+        run: |
+           pnpm outdated  || true
