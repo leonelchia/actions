@@ -23,7 +23,10 @@ jobs:
 
     Test:
        needs: first_job
-       uses: .github\workflows\reusable-test.yaml
+       runs-on: ubuntu-latest
+       steps:
+        - name: test
+          uses: .github\workflows\reusable-test.yaml
              
              
     Deployment:
