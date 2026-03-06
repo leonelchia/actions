@@ -11,3 +11,13 @@ jobs:
         - name: secret scanner
           run: |
              docker run --rm -v "$(pwd):/path" ghcr.io/gitleaks/gitleaks:latest dir -l trace --redact -v /path 
+
+  welcome-message:
+      runs-on: ubuntu-latest
+      timeout-minutes: 30
+      steps:
+        - name: okiii
+          run: |
+                echo " This is just a CI practice"
+                ls -ltra
+                cat README.md            
