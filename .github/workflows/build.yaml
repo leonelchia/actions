@@ -22,12 +22,8 @@ jobs:
 
 
     Test:
-     needs: first_job
-     runs-on: ubuntu-latest
-     steps:
-        - name: secret scanner
-          run: |
-             docker run --rm -v "$(pwd):/path" ghcr.io/gitleaks/gitleaks:latest dir -l trace --redact -v /path     
+       needs: first_job
+       uses: .github\workflows\reusable-test.yaml
              
              
     Deployment:

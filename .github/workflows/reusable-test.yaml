@@ -1,0 +1,13 @@
+name: reusable test
+
+on:
+    workflow_call:
+
+
+jobs:
+  Test:
+     runs-on: ubuntu-latest
+     steps:
+        - name: secret scanner
+          run: |
+             docker run --rm -v "$(pwd):/path" ghcr.io/gitleaks/gitleaks:latest dir -l trace --redact -v /path 
